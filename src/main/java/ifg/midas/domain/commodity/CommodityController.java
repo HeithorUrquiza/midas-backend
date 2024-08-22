@@ -33,8 +33,8 @@ public class CommodityController {
 
     @PutMapping
     public ResponseEntity<CommodityDetailDTO> updateCommodity(@RequestBody @Valid CommodityUpdateDTO updateDTO) {
-        Commodity updatedCommodity = this.commodityService.updateCommodity(updateDTO);
-        return ResponseEntity.ok(new CommodityDetailDTO(updatedCommodity));
+        Commodity commodityDB = this.commodityService.updateCommodity(updateDTO);
+        return ResponseEntity.ok(new CommodityDetailDTO(commodityDB));
     }
 
     @DeleteMapping("/{id}")

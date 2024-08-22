@@ -11,6 +11,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Table(name="clients")
@@ -29,7 +30,7 @@ public class Client {
     private String email;
     private String phone;
 
-    @OneToMany
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Commodity> commodities;
 
     public Client(ClientRegistryDTO clientRegistryDTO) {
@@ -40,8 +41,8 @@ public class Client {
         this.commodities = new ArrayList<>();
     }
 
-    public void updateInfos(ClientUpdateDTO clientUpdateDTO) {
-        this.setEmail(clientUpdateDTO.email().toLowerCase());
-        this.setPhone(clientUpdateDTO.phone());
+    public void updateInfos(ClientUpdateDTO updateDTO) {
+        Optional.ofNullable(updateDTO.email()).ifPresent(email -> {if (!email.isBlank()) setEmail(email.toLowerCase());});
+        Optional.ofNullable(updateDTO.phone()).ifPresent(phone -> {if (!phone.isBlank()) setPhone(phone);});
     }
 }
