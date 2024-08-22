@@ -2,6 +2,7 @@ package ifg.midas.domain.commodity;
 
 import ifg.midas.domain.commodity.dto.CommodityDetailDTO;
 import ifg.midas.domain.commodity.dto.CommodityRegistryDTO;
+import ifg.midas.domain.commodity.dto.CommodityUpdateDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,12 @@ public class CommodityController {
     public ResponseEntity<CommodityDetailDTO> getCommodity(@PathVariable Long id) {
         Commodity commodity = this.commodityService.getCommodity(id);
         return ResponseEntity.ok(new CommodityDetailDTO(commodity));
+    }
+
+    @PutMapping
+    public ResponseEntity<CommodityDetailDTO> updateCommodity(@RequestBody @Valid CommodityUpdateDTO updateDTO) {
+        Commodity updatedCommodity = this.commodityService.updateCommodity(updateDTO);
+        return ResponseEntity.ok(new CommodityDetailDTO(updatedCommodity));
     }
 
     @DeleteMapping("/{id}")

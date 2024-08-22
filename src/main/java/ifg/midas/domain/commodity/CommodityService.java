@@ -1,6 +1,7 @@
 package ifg.midas.domain.commodity;
 
 import ifg.midas.domain.commodity.dto.CommodityRegistryDTO;
+import ifg.midas.domain.commodity.dto.CommodityUpdateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,13 @@ public class CommodityService {
 
     public Commodity getCommodity(Long id) {
         return this.commodityRepository.getReferenceById(id);
+    }
+
+    @Transactional
+    public Commodity updateCommodity(CommodityUpdateDTO updateDTO) {
+        Commodity commodityDB = this.commodityRepository.getReferenceById(updateDTO.id());
+        commodityDB.updateInfos(updateDTO);
+        return commodityDB;
     }
 
     @Transactional

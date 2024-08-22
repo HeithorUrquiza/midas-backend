@@ -30,7 +30,7 @@ public class Client {
     }
 
     public void updateInfos(ClientUpdateDTO clientUpdateDTO) {
-        this.setEmail(clientUpdateDTO.email());
+        this.setEmail(clientUpdateDTO.email().toLowerCase());
         this.setPhone(clientUpdateDTO.phone());
     }
 }
