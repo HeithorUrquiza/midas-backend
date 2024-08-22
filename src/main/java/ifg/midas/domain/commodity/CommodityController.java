@@ -27,8 +27,8 @@ public class CommodityController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CommodityDetailDTO> getCommodity(@PathVariable Long id) {
-        Commodity commodity = this.commodityService.getCommodity(id);
-        return ResponseEntity.ok(new CommodityDetailDTO(commodity));
+        Commodity commodityDB = this.commodityService.getCommodity(id);
+        return ResponseEntity.ok(new CommodityDetailDTO(commodityDB));
     }
 
     @PutMapping

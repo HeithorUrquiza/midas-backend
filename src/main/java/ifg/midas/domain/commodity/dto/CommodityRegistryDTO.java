@@ -1,8 +1,11 @@
 package ifg.midas.domain.commodity.dto;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record CommodityRegistryDTO(
         @NotBlank String name,
-        @NotBlank String code
+        @NotBlank String code,
+        @NotNull @Email String clientEmail
 ) {}

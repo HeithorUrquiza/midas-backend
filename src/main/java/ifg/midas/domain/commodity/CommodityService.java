@@ -1,19 +1,31 @@
 package ifg.midas.domain.commodity;
 
+import ifg.midas.domain.client.Client;
+import ifg.midas.domain.client.ClientRepository;
 import ifg.midas.domain.commodity.dto.CommodityRegistryDTO;
 import ifg.midas.domain.commodity.dto.CommodityUpdateDTO;
+import org.hibernate.TransientPropertyValueException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 public class CommodityService {
     @Autowired
     private CommodityRepository commodityRepository;
 
+    @Autowired
+    private ClientRepository clientRepository;
+
     @Transactional
     public Commodity registryCommodity(CommodityRegistryDTO registryDTO) {
-        Commodity commodity = new Commodity(registryDTO);
+        Optional<Client> clientDB = Optional.ofNullable(this.clientRepository.findByEmail(registryDTO.clientEmail()));
+        if (clientDB.isEmpty()) {
+            throw new TransientPropertyValueException("Cliente não cadastrado no banco", "Client", "Commodity", "client");
+        }
+        Commodity commodity = new Commodity(registryDTO, clientDB.get());
         this.commodityRepository.save(commodity);
         return commodity;
     }

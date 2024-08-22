@@ -1,6 +1,7 @@
 package ifg.midas.domain.client;
 
 import ifg.midas.domain.client.dto.ClientDetailDTO;
+import ifg.midas.domain.client.dto.ClientRecoverDTO;
 import ifg.midas.domain.client.dto.ClientRegistryDTO;
 import ifg.midas.domain.client.dto.ClientUpdateDTO;
 import jakarta.validation.Valid;
@@ -27,14 +28,14 @@ public class ClientController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ClientDetailDTO> getClient(@PathVariable Long id) {
-        Client clientFound = this.clientService.getClient(id);
-        return ResponseEntity.ok(new ClientDetailDTO(clientFound));
+        Client clientDB = this.clientService.getClient(id);
+        return ResponseEntity.ok(new ClientDetailDTO(clientDB));
     }
 
     @PutMapping
-    public ResponseEntity<ClientDetailDTO> updateClient(@RequestBody @Valid ClientUpdateDTO clientUpdateDTO) {
+    public ResponseEntity<ClientRecoverDTO> updateClient(@RequestBody @Valid ClientUpdateDTO clientUpdateDTO) {
         Client updatedClient = this.clientService.updateClient(clientUpdateDTO);
-        return ResponseEntity.ok(new ClientDetailDTO(updatedClient));
+        return ResponseEntity.ok(new ClientRecoverDTO(updatedClient));
     }
 
     @DeleteMapping("/{id}")

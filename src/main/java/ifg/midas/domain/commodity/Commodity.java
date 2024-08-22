@@ -4,7 +4,10 @@ import ifg.midas.domain.client.Client;
 import ifg.midas.domain.commodity.dto.CommodityRegistryDTO;
 import ifg.midas.domain.commodity.dto.CommodityUpdateDTO;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Optional;
 
@@ -13,21 +16,24 @@ import java.util.Optional;
 @Getter
 @Setter
 @NoArgsConstructor
-//@AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class Commodity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+
     @Column(unique = true)
     private String code;
 
-//    private Long client_id;
+    @ManyToOne
+    @JoinColumn(name = "client_id")
+    private Client client;
 
-    public Commodity(CommodityRegistryDTO commodityRegistryDTO) {
+    public Commodity(CommodityRegistryDTO commodityRegistryDTO, Client clientDB) {
         this.name = commodityRegistryDTO.name().toUpperCase();
         this.code = commodityRegistryDTO.code().toUpperCase();
+        this.client = clientDB;
     }
 
     public void updateInfos(CommodityUpdateDTO updateDTO) {

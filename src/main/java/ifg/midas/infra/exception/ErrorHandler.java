@@ -1,6 +1,7 @@
 package ifg.midas.infra.exception;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.hibernate.TransientPropertyValueException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -8,7 +9,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestControllerAdvice
 public class ErrorHandler {
@@ -38,5 +41,13 @@ public class ErrorHandler {
         public DataIntegrityError(DataIntegrityViolationException ex) {
             this(ex.getMessage());
         }
+    }
+
+    @ExceptionHandler(TransientPropertyValueException.class)
+    public ResponseEntity<HashMap<String, String>> handleTransientPropertyValueException(TransientPropertyValueException ex) {
+        HashMap<String, String> error = new HashMap<>(Map.of(
+                "propertyName", ex.getPropertyName(),
+                "message", ex.getMessage()));
+        return ResponseEntity.badRequest().body(error);
     }
 }
