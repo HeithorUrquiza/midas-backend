@@ -1,8 +1,8 @@
 package ifg.midas.domain.client;
 
 import ifg.midas.domain.client.dto.ClientRegistryDTO;
+import ifg.midas.domain.client.dto.ClientUpdateDTO;
 import ifg.midas.infra.exception.UniqueFieldException;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +16,7 @@ public class ClientService {
 
     @Transactional
     public Client registryClient(ClientRegistryDTO clientRegistryDTO) {
-        Optional<Client> clientFound= Optional.ofNullable(this.clientRepository.findByEmail(clientRegistryDTO.email()));
+        Optional<Client> clientFound= Optional.ofNullable(this.clientRepository.findByEmail(clientRegistryDTO.email().toLowerCase()));
         if (clientFound.isPresent()) {
             throw new UniqueFieldException("O email " + clientRegistryDTO.email() + " já está cadastrado");
         }
@@ -30,7 +30,15 @@ public class ClientService {
     }
 
     @Transactional
+    public Client updateClient(ClientUpdateDTO clientUpdateDTO) {
+        Client clientDB = this.clientRepository.getReferenceById(clientUpdateDTO.id());
+        clientDB.updateInfos(clientUpdateDTO);
+        return clientDB;
+    }
+
+    @Transactional
     public void deleteClient(Long id) {
-        this.clientRepository.deleteById(id);
+        Client clientDB = this.clientRepository.getReferenceById(id);
+        this.clientRepository.deleteById(clientDB.getId());
     }
 }

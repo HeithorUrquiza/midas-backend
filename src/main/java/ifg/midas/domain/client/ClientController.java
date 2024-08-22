@@ -2,6 +2,7 @@ package ifg.midas.domain.client;
 
 import ifg.midas.domain.client.dto.ClientDetailDTO;
 import ifg.midas.domain.client.dto.ClientRegistryDTO;
+import ifg.midas.domain.client.dto.ClientUpdateDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/clients")
@@ -31,7 +31,11 @@ public class ClientController {
         return ResponseEntity.ok(new ClientDetailDTO(clientFound));
     }
 
-//    Update will here
+    @PutMapping
+    public ResponseEntity<ClientDetailDTO> updateClient(@RequestBody @Valid ClientUpdateDTO clientUpdateDTO) {
+        Client updatedClient = this.clientService.updateClient(clientUpdateDTO);
+        return ResponseEntity.ok(new ClientDetailDTO(updatedClient));
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
@@ -39,10 +43,3 @@ public class ClientController {
         return ResponseEntity.noContent().build();
     }
 }
-
-//    @PutMapping
-//    public ResponseEntity<PatientDetailDTO> updatePatient(@RequestBody @Valid PatientUpdateDTO patientUpdateDTO) {
-//        Patient updatedPatient = this.patientService.updatePatient(patientUpdateDTO);
-//        return ResponseEntity.ok(new PatientDetailDTO(updatedPatient));
-//    }
-//

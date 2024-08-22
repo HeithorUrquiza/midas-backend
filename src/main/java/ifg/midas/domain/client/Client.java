@@ -1,9 +1,9 @@
 package ifg.midas.domain.client;
 
 import ifg.midas.domain.client.dto.ClientRegistryDTO;
+import ifg.midas.domain.client.dto.ClientUpdateDTO;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.validator.constraints.UniqueElements;
 
 @Entity
 @Table(name="clients")
@@ -23,9 +23,14 @@ public class Client {
     private String phone;
 
     public Client(ClientRegistryDTO clientRegistryDTO) {
-        this.firstName = clientRegistryDTO.firstName();
-        this.lastName = clientRegistryDTO.lastName();
-        this.email = clientRegistryDTO.email();
+        this.firstName = clientRegistryDTO.firstName().toUpperCase();
+        this.lastName = clientRegistryDTO.lastName().toUpperCase();
+        this.email = clientRegistryDTO.email().toLowerCase();
         this.phone = clientRegistryDTO.phone();
+    }
+
+    public void updateInfos(ClientUpdateDTO clientUpdateDTO) {
+        this.setEmail(clientUpdateDTO.email());
+        this.setPhone(clientUpdateDTO.phone());
     }
 }
