@@ -1,6 +1,7 @@
 package ifg.midas.infra.exception;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -28,13 +29,13 @@ public class ErrorHandler {
         }
     }
 
-    @ExceptionHandler(UniqueFieldException.class)
-    public ResponseEntity<UniqueFieldError> handleUniqueFieldException(UniqueFieldException ex) {
-        return ResponseEntity.badRequest().body(new UniqueFieldError(ex.getMessage()));
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<DataIntegrityError> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        return ResponseEntity.badRequest().body(new DataIntegrityError(ex));
     }
 
-    private record UniqueFieldError(String message) {
-        public UniqueFieldError(UniqueFieldException ex) {
+    private record DataIntegrityError(String message) {
+        public DataIntegrityError(DataIntegrityViolationException ex) {
             this(ex.getMessage());
         }
     }

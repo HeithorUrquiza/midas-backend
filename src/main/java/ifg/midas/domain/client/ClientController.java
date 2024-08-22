@@ -18,7 +18,7 @@ public class ClientController {
     private ClientService clientService;
 
     @PostMapping
-    public ResponseEntity<ClientDetailDTO> registerClient(@RequestBody @Valid ClientRegistryDTO clientRegistry,
+    public ResponseEntity<ClientDetailDTO> registryClient(@RequestBody @Valid ClientRegistryDTO clientRegistry,
                                                           UriComponentsBuilder uriBuilder) {
         Client newClient = this.clientService.registryClient(clientRegistry);
         URI uri = uriBuilder.path("/clients/{id}").buildAndExpand(newClient.getId()).toUri();
