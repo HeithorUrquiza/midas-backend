@@ -3,6 +3,7 @@ package ifg.midas.domain.token;
 import ifg.midas.domain.client.Client;
 import ifg.midas.domain.client.ClientRepository;
 import ifg.midas.domain.token.dto.TokenRegistryDTO;
+import ifg.midas.domain.token.dto.TokenUpdateDTO;
 import org.hibernate.TransientPropertyValueException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,14 @@ public class TokenService {
     public Token getToken(Long id) {
         return this.tokenRepository.getReferenceById(id);
     }
+
+    @Transactional
+    public Token updateToken(TokenUpdateDTO updateDTO) {
+        Token tokenDB = this.tokenRepository.getReferenceById(updateDTO.id());
+        tokenDB.updateInfos(updateDTO);
+        return tokenDB;
+    }
+
 
     @Transactional
     public void deleteToken(Long id) {

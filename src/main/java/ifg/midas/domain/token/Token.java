@@ -2,11 +2,14 @@ package ifg.midas.domain.token;
 
 import ifg.midas.domain.client.Client;
 import ifg.midas.domain.token.dto.TokenRegistryDTO;
+import ifg.midas.domain.token.dto.TokenUpdateDTO;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Optional;
 
 @Entity
 @Table(name = "tokens")
@@ -29,5 +32,9 @@ public class Token {
     public Token(TokenRegistryDTO registryDTO, Client clientDB) {
         this.token = registryDTO.token().toUpperCase();
         this.client = clientDB;
+    }
+
+    public void updateInfos(TokenUpdateDTO updateDTO) {
+        Optional.ofNullable(updateDTO.token()).ifPresent(name -> {if (!name.isBlank()) setToken(name.toUpperCase());});
     }
 }

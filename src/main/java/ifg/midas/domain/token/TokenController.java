@@ -2,6 +2,7 @@ package ifg.midas.domain.token;
 
 import ifg.midas.domain.token.dto.TokenDetailDTO;
 import ifg.midas.domain.token.dto.TokenRegistryDTO;
+import ifg.midas.domain.token.dto.TokenUpdateDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,12 @@ public class TokenController {
     public ResponseEntity<TokenDetailDTO> getToken(@PathVariable Long id) {
         Token token = this.tokenService.getToken(id);
         return ResponseEntity.ok(new TokenDetailDTO(token));
+    }
+
+    @PutMapping
+    public ResponseEntity<TokenDetailDTO> updateToken(@RequestBody @Valid TokenUpdateDTO updateDTO) {
+        Token tokenDB = this.tokenService.updateToken(updateDTO);
+        return ResponseEntity.ok(new TokenDetailDTO(tokenDB));
     }
 
     @DeleteMapping("/{id}")

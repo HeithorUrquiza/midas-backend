@@ -4,7 +4,8 @@ import ifg.midas.domain.client.dto.ClientRegistryDTO;
 import ifg.midas.domain.client.dto.ClientUpdateDTO;
 import ifg.midas.domain.commodity.Commodity;
 import ifg.midas.domain.commodity.CommodityRepository;
-import ifg.midas.domain.commodity.dto.CommodityRecoverDTO;
+import ifg.midas.domain.token.Token;
+import ifg.midas.domain.token.TokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,9 @@ public class ClientService {
     @Autowired
     private CommodityRepository commodityRepository;
 
+    @Autowired
+    private TokenRepository tokenRepository;
+
     @Transactional
     public Client registryClient(ClientRegistryDTO clientRegistryDTO) {
         Client newClient = new Client(clientRegistryDTO);
@@ -28,10 +32,13 @@ public class ClientService {
     }
 
     public Client getClient(Long id) {
-        List<Commodity> commodities = this.recoverCommodities().stream()
-                .sorted(Comparator.comparing(Commodity::getId)).toList();
         Client clientDB = this.clientRepository.getReferenceById(id);
-        clientDB.setCommodities(commodities);
+        List<Commodity> commoditiesDB = this.recoverCommodities(clientDB.getId());
+        List<Token> tokensDB = this.recoverTokens(clientDB.getId());
+
+        clientDB.setCommodities(commoditiesDB);
+        clientDB.setTokens(tokensDB);
+
         return clientDB;
     }
 
@@ -48,7 +55,15 @@ public class ClientService {
         this.clientRepository.deleteById(clientDB.getId());
     }
 
-    private List<Commodity> recoverCommodities() {
-        return this.commodityRepository.findAll();
+    private List<Commodity> recoverCommodities(Long id) {
+        List<Commodity> commoditiesDB = this.commodityRepository.commodityPerClient(id);
+        return commoditiesDB.stream()
+                .sorted(Comparator.comparing(Commodity::getId)).toList();
+    }
+
+    private List<Token> recoverTokens(Long id) {
+        List<Token> tokensDB = this.tokenRepository.tokenPerClient(id);
+        return tokensDB.stream()
+                .sorted(Comparator.comparing(Token::getId)).toList();
     }
 }
