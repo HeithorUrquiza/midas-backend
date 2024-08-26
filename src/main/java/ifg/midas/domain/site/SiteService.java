@@ -3,6 +3,7 @@ package ifg.midas.domain.site;
 import ifg.midas.domain.client.Client;
 import ifg.midas.domain.client.ClientRepository;
 import ifg.midas.domain.site.dto.SiteRegistryDTO;
+import ifg.midas.domain.site.dto.SiteUpdateDTO;
 import org.hibernate.TransientPropertyValueException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,13 @@ public class SiteService {
 
     public Site getSite(Long id) {
         return this.siteRepository.getReferenceById(id);
+    }
+
+    @Transactional
+    public Site updateSite(Long id, SiteUpdateDTO updateDTO) {
+        Site siteDB = this.siteRepository.getReferenceById(id);
+        siteDB.updateInfos(updateDTO);
+        return siteDB;
     }
 
     @Transactional

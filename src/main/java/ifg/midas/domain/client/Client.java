@@ -3,6 +3,7 @@ package ifg.midas.domain.client;
 import ifg.midas.domain.client.dto.ClientRegistryDTO;
 import ifg.midas.domain.client.dto.ClientUpdateDTO;
 import ifg.midas.domain.commodity.Commodity;
+import ifg.midas.domain.site.Site;
 import ifg.midas.domain.token.Token;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
@@ -37,6 +38,9 @@ public class Client {
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Token> tokens;
 
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Site> sites;
+
     public Client(ClientRegistryDTO clientRegistryDTO) {
         this.firstName = clientRegistryDTO.firstName().toUpperCase();
         this.lastName = clientRegistryDTO.lastName().toUpperCase();
@@ -44,6 +48,7 @@ public class Client {
         this.phone = clientRegistryDTO.phone();
         this.commodities = new ArrayList<>();
         this.tokens = new ArrayList<>();
+        this.sites = new ArrayList<>();
     }
 
     public void updateInfos(ClientUpdateDTO updateDTO) {

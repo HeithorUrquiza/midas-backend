@@ -2,6 +2,7 @@ package ifg.midas.domain.site;
 
 import ifg.midas.domain.site.dto.SiteDetailDTO;
 import ifg.midas.domain.site.dto.SiteRegistryDTO;
+import ifg.midas.domain.site.dto.SiteUpdateDTO;
 import ifg.midas.domain.token.Token;
 import ifg.midas.domain.token.dto.TokenDetailDTO;
 import ifg.midas.domain.token.dto.TokenRegistryDTO;
@@ -31,6 +32,12 @@ public class SiteController {
     public ResponseEntity<SiteDetailDTO> getSite(@PathVariable Long id) {
         Site siteDB = this.siteService.getSite(id);
         return ResponseEntity.ok(new SiteDetailDTO(siteDB));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<SiteDetailDTO> updateSite(@PathVariable Long id, @RequestBody @Valid SiteUpdateDTO updateDTO) {
+        Site updatedSite = this.siteService.updateSite(id, updateDTO);
+        return ResponseEntity.ok(new SiteDetailDTO(updatedSite));
     }
 
     @DeleteMapping("/{id}")

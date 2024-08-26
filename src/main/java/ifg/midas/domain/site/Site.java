@@ -2,11 +2,14 @@ package ifg.midas.domain.site;
 
 import ifg.midas.domain.client.Client;
 import ifg.midas.domain.site.dto.SiteRegistryDTO;
+import ifg.midas.domain.site.dto.SiteUpdateDTO;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Optional;
 
 @Entity
 @Table(name = "sites")
@@ -31,5 +34,10 @@ public class Site {
         this.name = registryDTO.name();
         this.url = registryDTO.url();
         this.client = clientDB;
+    }
+
+    public void updateInfos(SiteUpdateDTO updateDTO) {
+        Optional.ofNullable(updateDTO.name()).ifPresent(name -> { if(!name.isBlank()) setName(name); });
+        Optional.ofNullable(updateDTO.url()).ifPresent(url -> { if(!url.isBlank()) setUrl(url); });
     }
 }

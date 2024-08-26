@@ -4,6 +4,8 @@ import ifg.midas.domain.client.dto.ClientRegistryDTO;
 import ifg.midas.domain.client.dto.ClientUpdateDTO;
 import ifg.midas.domain.commodity.Commodity;
 import ifg.midas.domain.commodity.CommodityRepository;
+import ifg.midas.domain.site.Site;
+import ifg.midas.domain.site.SiteRepository;
 import ifg.midas.domain.token.Token;
 import ifg.midas.domain.token.TokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,9 @@ public class ClientService {
     @Autowired
     private TokenRepository tokenRepository;
 
+    @Autowired
+    private SiteRepository siteRepository;
+
     @Transactional
     public Client registryClient(ClientRegistryDTO clientRegistryDTO) {
         Client newClient = new Client(clientRegistryDTO);
@@ -35,9 +40,11 @@ public class ClientService {
         Client clientDB = this.clientRepository.getReferenceById(id);
         List<Commodity> commoditiesDB = this.recoverCommodities(clientDB.getId());
         List<Token> tokensDB = this.recoverTokens(clientDB.getId());
+        List<Site> sitesDB = this.recoverSites(clientDB.getId());
 
         clientDB.setCommodities(commoditiesDB);
         clientDB.setTokens(tokensDB);
+        clientDB.setSites(sitesDB);
 
         return clientDB;
     }
@@ -57,13 +64,16 @@ public class ClientService {
 
     private List<Commodity> recoverCommodities(Long id) {
         List<Commodity> commoditiesDB = this.commodityRepository.commodityPerClient(id);
-        return commoditiesDB.stream()
-                .sorted(Comparator.comparing(Commodity::getId)).toList();
+        return commoditiesDB.stream().sorted(Comparator.comparing(Commodity::getId)).toList();
     }
 
     private List<Token> recoverTokens(Long id) {
         List<Token> tokensDB = this.tokenRepository.tokenPerClient(id);
-        return tokensDB.stream()
-                .sorted(Comparator.comparing(Token::getId)).toList();
+        return tokensDB.stream().sorted(Comparator.comparing(Token::getId)).toList();
+    }
+
+    private List<Site> recoverSites(Long id) {
+        List<Site> sitesDB = this.siteRepository.sitePerClient(id);
+        return sitesDB.stream().sorted(Comparator.comparing(Site::getId)).toList();
     }
 }
