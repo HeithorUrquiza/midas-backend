@@ -29,4 +29,13 @@ public class SiteService {
         return site;
     }
 
+    public Site getSite(Long id) {
+        return this.siteRepository.getReferenceById(id);
+    }
+
+    @Transactional
+    public void deleteSite(Long id) {
+        Site siteDB = this.siteRepository.getReferenceById(id);
+        this.siteRepository.deleteById(siteDB.getId());
+    }
 }

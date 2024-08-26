@@ -41,7 +41,6 @@ public class TokenService {
         return tokenDB;
     }
 
-
     @Transactional
     public void deleteToken(Long id) {
         Token tokenDB = this.tokenRepository.getReferenceById(id);
