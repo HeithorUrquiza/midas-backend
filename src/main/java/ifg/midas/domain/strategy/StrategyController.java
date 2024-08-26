@@ -2,6 +2,7 @@ package ifg.midas.domain.strategy;
 
 import ifg.midas.domain.strategy.dto.StrategyDetailDTO;
 import ifg.midas.domain.strategy.dto.StrategyRegistryDTO;
+import ifg.midas.domain.strategy.dto.StrategyUpdateDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,13 @@ public class StrategyController {
     @GetMapping("/{id}")
     public ResponseEntity<StrategyDetailDTO> getStrategy(@PathVariable Long id) {
         Strategy strategyDB = this.strategyService.getStrategy(id);
+        return ResponseEntity.ok(new StrategyDetailDTO(strategyDB));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<StrategyDetailDTO> updateStrategy(@PathVariable Long id,
+                                                            @RequestBody StrategyUpdateDTO updateDTO) {
+        Strategy strategyDB = this.strategyService.updateStrategy(id, updateDTO);
         return ResponseEntity.ok(new StrategyDetailDTO(strategyDB));
     }
 

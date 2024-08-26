@@ -7,6 +7,7 @@ import ifg.midas.domain.commodity.CommodityRepository;
 import ifg.midas.domain.site.Site;
 import ifg.midas.domain.site.SiteRepository;
 import ifg.midas.domain.strategy.dto.StrategyRegistryDTO;
+import ifg.midas.domain.strategy.dto.StrategyUpdateDTO;
 import ifg.midas.domain.token.Token;
 import ifg.midas.domain.token.TokenRepository;
 import org.hibernate.TransientPropertyValueException;
@@ -51,11 +52,33 @@ public class StrategyService {
     }
 
     @Transactional
+    public Strategy updateStrategy(Long id, StrategyUpdateDTO updateDTO) {
+        List<Token> tokensDB = new ArrayList<>();
+        List<Site> sitesDB = new ArrayList<>();
+
+        Strategy strategyDB = this.strategyRepository.getReferenceById(id);
+        Commodity commodityDB = this.commodityRepository.commodityByCodeAndClient(updateDTO.commodityCode(),
+                strategyDB.getClient().getId());
+
+        for (String token : updateDTO.tokens()) {
+            Optional.ofNullable(this.tokenRepository.tokenByTokenAndClient(token, strategyDB.getClient().getId()))
+                            .ifPresent(tokensDB::add);
+        }
+
+        for (String site : updateDTO.sites()) {
+            Optional.ofNullable(this.siteRepository.siteByNameAndClient(site, strategyDB.getClient().getId()))
+                            .ifPresent(sitesDB::add);
+        }
+
+        strategyDB.updateInfos(updateDTO.name(), commodityDB, tokensDB, sitesDB);
+        return strategyDB;
+    }
+
+    @Transactional
     public void deleteStrategy(Long id) {
         Strategy strategy = this.strategyRepository.getReferenceById(id);
         this.strategyRepository.deleteById(strategy.getId());
     }
-
 
     private Client findClient(String clientEmail) {
         Optional<Client> clientDB = Optional.ofNullable(this.clientRepository.findByEmailIgnoreCase(clientEmail));
@@ -99,5 +122,4 @@ public class StrategyService {
         }
         return sitesDB;
     }
-
 }

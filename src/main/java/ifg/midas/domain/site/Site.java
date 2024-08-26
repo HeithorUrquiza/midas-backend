@@ -33,7 +33,7 @@ public class Site {
     @JoinColumn(name = "client_id")
     private Client client;
 
-    @ManyToMany(cascade = CascadeType.REFRESH)
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 //    @JoinTable(name = "strategy_site",
 //            joinColumns = @JoinColumn(name = "strategy_id", referencedColumnName = "id"),
 //            inverseJoinColumns = @JoinColumn(name = "site_id", referencedColumnName = "id")

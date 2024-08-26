@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Table(name = "strategies")
@@ -46,5 +47,12 @@ public class Strategy {
         this.commodity = commodityDB;
         this.tokens = tokensDB;
         this.sites = sitesDB;
+    }
+
+    public void updateInfos(String name, Commodity commodityDB, List<Token> tokensDB, List<Site> sitesDB) {
+        Optional.ofNullable(name).ifPresent(n -> { if (!n.isBlank()) setName(n); });
+        Optional.ofNullable(commodityDB).ifPresent(this::setCommodity);
+        Optional.ofNullable(tokensDB).ifPresent(tokens -> { if (!tokens.isEmpty()) setTokens(tokens); });
+        Optional.ofNullable(sitesDB).ifPresent(sites -> { if (!sites.isEmpty()) setSites(sites); });
     }
 }
