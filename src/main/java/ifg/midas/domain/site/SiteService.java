@@ -21,7 +21,7 @@ public class SiteService {
 
     @Transactional
     public Site registrySite(SiteRegistryDTO registryDTO) {
-        Optional<Client> clientDB = Optional.ofNullable(this.clientRepository.findByEmail(registryDTO.clientEmail()));
+        Optional<Client> clientDB = Optional.ofNullable(this.clientRepository.findByEmailIgnoreCase(registryDTO.clientEmail()));
         if (clientDB.isEmpty()) {
             throw new TransientPropertyValueException("Cliente não cadastrado no banco", "Client", "Site", "client");
         }

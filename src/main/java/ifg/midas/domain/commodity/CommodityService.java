@@ -21,7 +21,7 @@ public class CommodityService {
 
     @Transactional
     public Commodity registryCommodity(CommodityRegistryDTO registryDTO) {
-        Optional<Client> clientDB = Optional.ofNullable(this.clientRepository.findByEmail(registryDTO.clientEmail()));
+        Optional<Client> clientDB = Optional.ofNullable(this.clientRepository.findByEmailIgnoreCase(registryDTO.clientEmail()));
         if (clientDB.isEmpty()) {
             throw new TransientPropertyValueException("Cliente não cadastrado no banco", "Client", "Commodity", "client");
         }

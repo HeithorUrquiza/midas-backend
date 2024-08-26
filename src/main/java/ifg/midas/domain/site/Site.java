@@ -3,12 +3,15 @@ package ifg.midas.domain.site;
 import ifg.midas.domain.client.Client;
 import ifg.midas.domain.site.dto.SiteRegistryDTO;
 import ifg.midas.domain.site.dto.SiteUpdateDTO;
+import ifg.midas.domain.strategy.Strategy;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Entity
@@ -30,10 +33,18 @@ public class Site {
     @JoinColumn(name = "client_id")
     private Client client;
 
+    @ManyToMany(cascade = CascadeType.REFRESH)
+//    @JoinTable(name = "strategy_site",
+//            joinColumns = @JoinColumn(name = "strategy_id", referencedColumnName = "id"),
+//            inverseJoinColumns = @JoinColumn(name = "site_id", referencedColumnName = "id")
+//    )
+    private List<Strategy> strategies;
+
     public Site(SiteRegistryDTO registryDTO, Client clientDB) {
-        this.name = registryDTO.name();
-        this.url = registryDTO.url();
+        this.name = registryDTO.name().toLowerCase();
+        this.url = registryDTO.url().toLowerCase();
         this.client = clientDB;
+        this.strategies = new ArrayList<>();
     }
 
     public void updateInfos(SiteUpdateDTO updateDTO) {

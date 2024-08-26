@@ -3,12 +3,15 @@ package ifg.midas.domain.commodity;
 import ifg.midas.domain.client.Client;
 import ifg.midas.domain.commodity.dto.CommodityRegistryDTO;
 import ifg.midas.domain.commodity.dto.CommodityUpdateDTO;
+import ifg.midas.domain.strategy.Strategy;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Entity
@@ -30,10 +33,14 @@ public class Commodity {
     @JoinColumn(name = "client_id")
     private Client client;
 
+    @OneToMany(mappedBy = "commodity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Strategy> strategies;
+
     public Commodity(CommodityRegistryDTO commodityRegistryDTO, Client clientDB) {
         this.name = commodityRegistryDTO.name().toUpperCase();
         this.code = commodityRegistryDTO.code().toUpperCase();
         this.client = clientDB;
+        this.strategies = new ArrayList<>();
     }
 
     public void updateInfos(CommodityUpdateDTO updateDTO) {
