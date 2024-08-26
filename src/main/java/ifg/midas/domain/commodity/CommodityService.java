@@ -35,8 +35,8 @@ public class CommodityService {
     }
 
     @Transactional
-    public Commodity updateCommodity(CommodityUpdateDTO updateDTO) {
-        Commodity commodityDB = this.commodityRepository.getReferenceById(updateDTO.id());
+    public Commodity updateCommodity(Long id, CommodityUpdateDTO updateDTO) {
+        Commodity commodityDB = this.commodityRepository.getReferenceById(id);
         commodityDB.updateInfos(updateDTO);
         return commodityDB;
     }

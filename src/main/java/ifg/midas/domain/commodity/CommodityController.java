@@ -31,9 +31,10 @@ public class CommodityController {
         return ResponseEntity.ok(new CommodityDetailDTO(commodityDB));
     }
 
-    @PutMapping
-    public ResponseEntity<CommodityDetailDTO> updateCommodity(@RequestBody @Valid CommodityUpdateDTO updateDTO) {
-        Commodity commodityDB = this.commodityService.updateCommodity(updateDTO);
+    @PutMapping("/{id}")
+    public ResponseEntity<CommodityDetailDTO> updateCommodity(@PathVariable Long id,
+                                                              @RequestBody @Valid CommodityUpdateDTO updateDTO) {
+        Commodity commodityDB = this.commodityService.updateCommodity(id, updateDTO);
         return ResponseEntity.ok(new CommodityDetailDTO(commodityDB));
     }
 

@@ -50,8 +50,8 @@ public class ClientService {
     }
 
     @Transactional
-    public Client updateClient(ClientUpdateDTO clientUpdateDTO) {
-        Client clientDB = this.clientRepository.getReferenceById(clientUpdateDTO.id());
+    public Client updateClient(Long id, ClientUpdateDTO clientUpdateDTO) {
+        Client clientDB = this.clientRepository.getReferenceById(id);
         clientDB.updateInfos(clientUpdateDTO);
         return clientDB;
     }

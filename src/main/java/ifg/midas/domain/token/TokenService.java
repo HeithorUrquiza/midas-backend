@@ -35,8 +35,8 @@ public class TokenService {
     }
 
     @Transactional
-    public Token updateToken(TokenUpdateDTO updateDTO) {
-        Token tokenDB = this.tokenRepository.getReferenceById(updateDTO.id());
+    public Token updateToken(Long id, TokenUpdateDTO updateDTO) {
+        Token tokenDB = this.tokenRepository.getReferenceById(id);
         tokenDB.updateInfos(updateDTO);
         return tokenDB;
     }

@@ -31,9 +31,10 @@ public class TokenController {
         return ResponseEntity.ok(new TokenDetailDTO(token));
     }
 
-    @PutMapping
-    public ResponseEntity<TokenDetailDTO> updateToken(@RequestBody @Valid TokenUpdateDTO updateDTO) {
-        Token tokenDB = this.tokenService.updateToken(updateDTO);
+    @PutMapping("/{id}")
+    public ResponseEntity<TokenDetailDTO> updateToken(@PathVariable Long id,
+                                                      @RequestBody @Valid TokenUpdateDTO updateDTO) {
+        Token tokenDB = this.tokenService.updateToken(id, updateDTO);
         return ResponseEntity.ok(new TokenDetailDTO(tokenDB));
     }
 

@@ -32,9 +32,10 @@ public class ClientController {
         return ResponseEntity.ok(new ClientDetailDTO(clientDB));
     }
 
-    @PutMapping
-    public ResponseEntity<ClientRecoverDTO> updateClient(@RequestBody @Valid ClientUpdateDTO clientUpdateDTO) {
-        Client updatedClient = this.clientService.updateClient(clientUpdateDTO);
+    @PutMapping("/{id}")
+    public ResponseEntity<ClientRecoverDTO> updateClient(@PathVariable Long id,
+                                                         @RequestBody @Valid ClientUpdateDTO updateDTO) {
+        Client updatedClient = this.clientService.updateClient(id, updateDTO);
         return ResponseEntity.ok(new ClientRecoverDTO(updatedClient));
     }
 
