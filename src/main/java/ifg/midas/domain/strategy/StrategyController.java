@@ -5,10 +5,7 @@ import ifg.midas.domain.strategy.dto.StrategyRegistryDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
@@ -27,4 +24,15 @@ public class StrategyController {
         return ResponseEntity.created(uri).body(new StrategyDetailDTO(strategy));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<StrategyDetailDTO> getStrategy(@PathVariable Long id) {
+        Strategy strategyDB = this.strategyService.getStrategy(id);
+        return ResponseEntity.ok(new StrategyDetailDTO(strategyDB));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteStrategy(@PathVariable Long id) {
+        this.strategyService.deleteStrategy(id);
+        return ResponseEntity.noContent().build();
+    }
 }

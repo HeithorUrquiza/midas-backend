@@ -46,6 +46,17 @@ public class StrategyService {
         return strategy;
     }
 
+    public Strategy getStrategy(Long id) {
+        return this.strategyRepository.getReferenceById(id);
+    }
+
+    @Transactional
+    public void deleteStrategy(Long id) {
+        Strategy strategy = this.strategyRepository.getReferenceById(id);
+        this.strategyRepository.deleteById(strategy.getId());
+    }
+
+
     private Client findClient(String clientEmail) {
         Optional<Client> clientDB = Optional.ofNullable(this.clientRepository.findByEmailIgnoreCase(clientEmail));
         if (clientDB.isEmpty()) {
