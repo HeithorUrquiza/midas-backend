@@ -28,6 +28,15 @@ public class GroupService {
         return group;
     }
 
+    public Group getGroup(Long id) {
+        return this.groupRepository.getReferenceById(id);
+    }
+
+    @Transactional
+    public void deleteGroup(Long id) {
+        this.groupRepository.deleteById(id);
+    }
+
     private Set<Client> findClients(Set<String> clients) {
         Set<Client> clientsDB = new HashSet<Client>();
         for (String clientEmail : clients) {
