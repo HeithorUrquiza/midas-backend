@@ -3,6 +3,7 @@ package ifg.midas.domain.client;
 import ifg.midas.domain.client.dto.ClientRegistryDTO;
 import ifg.midas.domain.client.dto.ClientUpdateDTO;
 import ifg.midas.domain.commodity.Commodity;
+import ifg.midas.domain.group.Group;
 import ifg.midas.domain.site.Site;
 import ifg.midas.domain.strategy.Strategy;
 import ifg.midas.domain.token.Token;
@@ -12,9 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Entity
 @Table(name="clients")
@@ -34,26 +33,25 @@ public class Client {
     private String phone;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Commodity> commodities;
+    private List<Commodity> commodities = new ArrayList<>();
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Token> tokens;
+    private List<Token> tokens = new ArrayList<>();
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Site> sites;
+    private List<Site> sites = new ArrayList<>();
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Strategy> strategies;
+    private List<Strategy> strategies = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "members")
+    private Set<Group> groups = new HashSet<>();
 
     public Client(ClientRegistryDTO clientRegistryDTO) {
         this.firstName = clientRegistryDTO.firstName().toUpperCase();
         this.lastName = clientRegistryDTO.lastName().toUpperCase();
         this.email = clientRegistryDTO.email().toLowerCase();
         this.phone = clientRegistryDTO.phone();
-        this.commodities = new ArrayList<>();
-        this.tokens = new ArrayList<>();
-        this.sites = new ArrayList<>();
-        this.strategies = new ArrayList<>();
     }
 
     public void updateInfos(ClientUpdateDTO updateDTO) {
