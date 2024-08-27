@@ -101,7 +101,7 @@ public class StrategyService {
             Optional<Token> tokenDB = Optional.ofNullable(this.tokenRepository.tokenByTokenAndClient(
                     token, clientId));
             if (tokenDB.isEmpty()) {
-                throw new TransientPropertyValueException("Token não cadastrado no banco",
+                throw new TransientPropertyValueException("Token: " + token + " não cadastrado no banco",
                         "Token", "Strategy", "token");
             }
             tokensDB.add(tokenDB.get());
@@ -114,7 +114,7 @@ public class StrategyService {
         for (String site : sites) {
             Optional<Site> siteDB = Optional.ofNullable(this.siteRepository.siteByNameAndClient(site, clientId));
             if (siteDB.isEmpty()) {
-                throw new TransientPropertyValueException("Site não cadastrado no banco", "Site", "Strategy", "site");
+                throw new TransientPropertyValueException("Site: " + site + " não cadastrado no banco", "Site", "Strategy", "site");
             }
             sitesDB.add(siteDB.get());
         }
