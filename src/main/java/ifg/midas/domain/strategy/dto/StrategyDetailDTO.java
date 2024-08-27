@@ -6,21 +6,26 @@ import ifg.midas.domain.site.dto.SiteRecoverDTO;
 import ifg.midas.domain.strategy.Strategy;
 import ifg.midas.domain.token.dto.TokenRecoverDTO;
 
-import java.util.List;
+import java.util.Comparator;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 public record StrategyDetailDTO(
         Long id,
         String name,
         ClientRecoverDTO client,
         CommodityRecoverDTO commodity,
-        List<TokenRecoverDTO> tokens,
-        List<SiteRecoverDTO> sites
+        Set<TokenRecoverDTO> tokens,
+        Set<SiteRecoverDTO> sites
 ) {
     public StrategyDetailDTO(Strategy strategy) {
         this(strategy.getId(), strategy.getName(), new ClientRecoverDTO(strategy.getClient()),
                 new CommodityRecoverDTO(strategy.getCommodity()),
-                strategy.getTokens().stream().map(TokenRecoverDTO::new).toList(),
-                strategy.getSites().stream().map(SiteRecoverDTO::new).toList()
+                strategy.getTokens().stream().map(TokenRecoverDTO::new).collect(Collectors.toCollection(() ->
+                        new TreeSet<>(Comparator.comparing(TokenRecoverDTO::id)))),
+                strategy.getSites().stream().map(SiteRecoverDTO::new).collect(Collectors.toCollection(() ->
+                        new TreeSet<>(Comparator.comparing(SiteRecoverDTO::id))))
         );
     }
 }

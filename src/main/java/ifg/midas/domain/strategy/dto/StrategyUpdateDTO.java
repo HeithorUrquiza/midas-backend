@@ -1,10 +1,10 @@
 package ifg.midas.domain.strategy.dto;
 
-import java.util.List;
+import java.util.Set;
 
 public record StrategyUpdateDTO(
         String name,
         String commodityCode,
-        List<String> tokens,
-        List<String> sites
+        Set<String> tokens,
+        Set<String> sites
 ) {}

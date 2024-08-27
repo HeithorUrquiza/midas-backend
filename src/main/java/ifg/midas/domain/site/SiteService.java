@@ -4,6 +4,8 @@ import ifg.midas.domain.client.Client;
 import ifg.midas.domain.client.ClientRepository;
 import ifg.midas.domain.site.dto.SiteRegistryDTO;
 import ifg.midas.domain.site.dto.SiteUpdateDTO;
+import ifg.midas.domain.strategy.Strategy;
+import ifg.midas.domain.strategy.StrategyRepository;
 import org.hibernate.TransientPropertyValueException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,9 @@ public class SiteService {
 
     @Autowired
     private ClientRepository clientRepository;
+
+    @Autowired
+    private StrategyRepository strategyRepository;
 
     @Transactional
     public Site registrySite(SiteRegistryDTO registryDTO) {
@@ -44,6 +49,14 @@ public class SiteService {
     @Transactional
     public void deleteSite(Long id) {
         Site siteDB = this.siteRepository.getReferenceById(id);
-        this.siteRepository.deleteById(siteDB.getId());
+        for (Strategy strategy : siteDB.getStrategies()) {
+            strategy.getSites().remove(siteDB);
+            this.strategyRepository.save(strategy);
+
+            if (strategy.getSites().isEmpty()) {
+                this.strategyRepository.delete(strategy);
+            }
+        }
+        this.siteRepository.delete(siteDB);
     }
 }

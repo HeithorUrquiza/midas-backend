@@ -10,9 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Entity
 @Table(name = "tokens")
@@ -32,17 +30,12 @@ public class Token {
     @JoinColumn(name = "client_id")
     private Client client;
 
-    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-//    @JoinTable(name = "strategy_token",
-//            joinColumns = @JoinColumn(name = "strategy_id", referencedColumnName = "id"),
-//            inverseJoinColumns = @JoinColumn(name = "token_id", referencedColumnName = "id")
-//    )
-    private List<Strategy> strategies;
+    @ManyToMany(mappedBy = "tokens")
+    private Set<Strategy> strategies = new HashSet<>();
 
     public Token(TokenRegistryDTO registryDTO, Client clientDB) {
         this.token = registryDTO.token().toUpperCase();
         this.client = clientDB;
-        this.strategies = new ArrayList<>();
     }
 
     public void updateInfos(TokenUpdateDTO updateDTO) {

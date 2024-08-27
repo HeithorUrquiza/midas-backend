@@ -2,6 +2,8 @@ package ifg.midas.domain.token;
 
 import ifg.midas.domain.client.Client;
 import ifg.midas.domain.client.ClientRepository;
+import ifg.midas.domain.strategy.Strategy;
+import ifg.midas.domain.strategy.StrategyRepository;
 import ifg.midas.domain.token.dto.TokenRegistryDTO;
 import ifg.midas.domain.token.dto.TokenUpdateDTO;
 import org.hibernate.TransientPropertyValueException;
@@ -18,6 +20,9 @@ public class TokenService {
 
     @Autowired
     private ClientRepository clientRepository;
+
+    @Autowired
+    private StrategyRepository strategyRepository;
 
     @Transactional
     public Token registryToken(TokenRegistryDTO registryDTO) {
@@ -44,6 +49,16 @@ public class TokenService {
     @Transactional
     public void deleteToken(Long id) {
         Token tokenDB = this.tokenRepository.getReferenceById(id);
-        this.tokenRepository.deleteById(tokenDB.getId());
+//        To ensure the deletion of token in ManyToMany relationship
+        for (Strategy strategy : tokenDB.getStrategies()) {
+            strategy.getTokens().remove(tokenDB);
+            this.strategyRepository.save(strategy);
+
+//            To delete strategy when tokens be empty
+            if (strategy.getTokens().isEmpty()) {
+                this.strategyRepository.delete(strategy);
+            }
+        }
+        this.tokenRepository.delete(tokenDB);
     }
 }

@@ -15,9 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class StrategyService {
@@ -40,8 +38,8 @@ public class StrategyService {
     public Strategy registryStrategy(StrategyRegistryDTO registryDTO) {
         Client clientDB = this.findClient(registryDTO.clientEmail().toLowerCase());
         Commodity commodityDB = this.findCommodity(registryDTO.commodityCode(), clientDB.getId());
-        List<Token> tokensDB = this.findTokens(registryDTO.tokens(), clientDB.getId());
-        List<Site> sitesDB = this.findSites(registryDTO.sites(), clientDB.getId());
+        Set<Token> tokensDB = this.findTokens(registryDTO.tokens(), clientDB.getId());
+        Set<Site> sitesDB = this.findSites(registryDTO.sites(), clientDB.getId());
         Strategy strategy = new Strategy(registryDTO.name(), clientDB, commodityDB, tokensDB, sitesDB);
         this.strategyRepository.save(strategy);
         return strategy;
@@ -53,8 +51,8 @@ public class StrategyService {
 
     @Transactional
     public Strategy updateStrategy(Long id, StrategyUpdateDTO updateDTO) {
-        List<Token> tokensDB = new ArrayList<>();
-        List<Site> sitesDB = new ArrayList<>();
+        Set<Token> tokensDB = new HashSet<>();
+        Set<Site> sitesDB = new HashSet<>();
 
         Strategy strategyDB = this.strategyRepository.getReferenceById(id);
         Commodity commodityDB = this.commodityRepository.commodityByCodeAndClient(updateDTO.commodityCode(),
@@ -97,8 +95,8 @@ public class StrategyService {
         return commodityDB.get();
     }
 
-    private List<Token> findTokens(List<String> tokens, Long clientId) {
-        List<Token> tokensDB = new ArrayList<>();
+    private Set<Token> findTokens(Set<String> tokens, Long clientId) {
+        Set<Token> tokensDB = new HashSet<>();
         for (String token : tokens) {
             Optional<Token> tokenDB = Optional.ofNullable(this.tokenRepository.tokenByTokenAndClient(
                     token, clientId));
@@ -111,8 +109,8 @@ public class StrategyService {
         return tokensDB;
     }
 
-    private List<Site> findSites(List<String> sites, Long clientId) {
-        List<Site> sitesDB = new ArrayList<>();
+    private Set<Site> findSites(Set<String> sites, Long clientId) {
+        Set<Site> sitesDB = new HashSet<>();
         for (String site : sites) {
             Optional<Site> siteDB = Optional.ofNullable(this.siteRepository.siteByNameAndClient(site, clientId));
             if (siteDB.isEmpty()) {

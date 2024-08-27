@@ -12,6 +12,7 @@ import lombok.Setter;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Entity
 @Table(name = "strategies")
@@ -36,12 +37,22 @@ public class Strategy {
     private Commodity commodity;
 
     @ManyToMany
-    private List<Token> tokens;
+    @JoinTable(
+            name = "strategies_tokens",
+            joinColumns = @JoinColumn(name = "strategy_id"),
+            inverseJoinColumns = @JoinColumn(name = "token_id")
+    )
+    private Set<Token> tokens;
 
     @ManyToMany
-    private List<Site> sites;
+    @JoinTable(
+            name = "strategies_sites",
+            joinColumns = @JoinColumn(name = "strategy_id"),
+            inverseJoinColumns = @JoinColumn(name = "site_id")
+    )
+    private Set<Site> sites;
 
-    public Strategy(String name, Client clientDB, Commodity commodityDB, List<Token> tokensDB, List<Site> sitesDB) {
+    public Strategy(String name, Client clientDB, Commodity commodityDB, Set<Token> tokensDB, Set<Site> sitesDB) {
         this.name = name.toUpperCase();
         this.client = clientDB;
         this.commodity = commodityDB;
@@ -49,7 +60,7 @@ public class Strategy {
         this.sites = sitesDB;
     }
 
-    public void updateInfos(String name, Commodity commodityDB, List<Token> tokensDB, List<Site> sitesDB) {
+    public void updateInfos(String name, Commodity commodityDB, Set<Token> tokensDB, Set<Site> sitesDB) {
         Optional.ofNullable(name).ifPresent(n -> { if (!n.isBlank()) setName(n); });
         Optional.ofNullable(commodityDB).ifPresent(this::setCommodity);
         Optional.ofNullable(tokensDB).ifPresent(tokens -> { if (!tokens.isEmpty()) setTokens(tokens); });

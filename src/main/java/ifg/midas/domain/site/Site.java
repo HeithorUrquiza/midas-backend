@@ -10,9 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Entity
 @Table(name = "sites")
@@ -33,18 +31,13 @@ public class Site {
     @JoinColumn(name = "client_id")
     private Client client;
 
-    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-//    @JoinTable(name = "strategy_site",
-//            joinColumns = @JoinColumn(name = "strategy_id", referencedColumnName = "id"),
-//            inverseJoinColumns = @JoinColumn(name = "site_id", referencedColumnName = "id")
-//    )
-    private List<Strategy> strategies;
+    @ManyToMany(mappedBy = "sites")
+    private Set<Strategy> strategies = new HashSet<>();
 
     public Site(SiteRegistryDTO registryDTO, Client clientDB) {
         this.name = registryDTO.name().toLowerCase();
         this.url = registryDTO.url().toLowerCase();
         this.client = clientDB;
-        this.strategies = new ArrayList<>();
     }
 
     public void updateInfos(SiteUpdateDTO updateDTO) {
