@@ -61,7 +61,7 @@ public class Strategy {
     }
 
     public void updateInfos(String name, Commodity commodityDB, Set<Token> tokensDB, Set<Site> sitesDB) {
-        Optional.ofNullable(name).ifPresent(n -> { if (!n.isBlank()) setName(n); });
+        Optional.ofNullable(name).ifPresent(n -> { if (!n.isBlank()) setName(n.toUpperCase()); });
         Optional.ofNullable(commodityDB).ifPresent(this::setCommodity);
         Optional.ofNullable(tokensDB).ifPresent(tokens -> { if (!tokens.isEmpty()) setTokens(tokens); });
         Optional.ofNullable(sitesDB).ifPresent(sites -> { if (!sites.isEmpty()) setSites(sites); });

@@ -51,22 +51,10 @@ public class StrategyService {
 
     @Transactional
     public Strategy updateStrategy(Long id, StrategyUpdateDTO updateDTO) {
-        Set<Token> tokensDB = new HashSet<>();
-        Set<Site> sitesDB = new HashSet<>();
-
         Strategy strategyDB = this.strategyRepository.getReferenceById(id);
-        Commodity commodityDB = this.commodityRepository.commodityByCodeAndClient(updateDTO.commodityCode(),
-                strategyDB.getClient().getId());
-
-        for (String token : updateDTO.tokens()) {
-            Optional.ofNullable(this.tokenRepository.tokenByTokenAndClient(token, strategyDB.getClient().getId()))
-                            .ifPresent(tokensDB::add);
-        }
-
-        for (String site : updateDTO.sites()) {
-            Optional.ofNullable(this.siteRepository.siteByNameAndClient(site, strategyDB.getClient().getId()))
-                            .ifPresent(sitesDB::add);
-        }
+        Commodity commodityDB = this.findCommodity(updateDTO.commodityCode(), strategyDB.getClient().getId());
+        Set<Token> tokensDB = this.findTokens(updateDTO.tokens(), strategyDB.getClient().getId());
+        Set<Site> sitesDB = this.findSites(updateDTO.sites(), strategyDB.getClient().getId());
 
         strategyDB.updateInfos(updateDTO.name(), commodityDB, tokensDB, sitesDB);
         return strategyDB;
@@ -81,7 +69,8 @@ public class StrategyService {
     private Client findClient(String clientEmail) {
         Optional<Client> clientDB = Optional.ofNullable(this.clientRepository.findByEmailIgnoreCase(clientEmail));
         if (clientDB.isEmpty()) {
-            throw new TransientPropertyValueException("Cliente não cadastrado no banco", "Client", "Strategy", "client");
+            throw new TransientPropertyValueException("Cliente: "+ clientEmail
+                    +"não cadastrado no banco", "Client", "Strategy", "client");
         }
         return clientDB.get();
     }
@@ -90,7 +79,8 @@ public class StrategyService {
         Optional<Commodity> commodityDB = Optional.ofNullable(this.commodityRepository.commodityByCodeAndClient(
                 commodityCode, clientId));
         if (commodityDB.isEmpty()) {
-            throw new TransientPropertyValueException("Commodity não cadastrado no banco", "Commodity", "Strategy", "commodity");
+            throw new TransientPropertyValueException("Commodity: "+ commodityCode
+                    +" não cadastrado no banco para o cliente de id: " +clientId, "Commodity", "Strategy", "commodity");
         }
         return commodityDB.get();
     }
@@ -101,8 +91,8 @@ public class StrategyService {
             Optional<Token> tokenDB = Optional.ofNullable(this.tokenRepository.tokenByTokenAndClient(
                     token, clientId));
             if (tokenDB.isEmpty()) {
-                throw new TransientPropertyValueException("Token: " + token + " não cadastrado no banco",
-                        "Token", "Strategy", "token");
+                throw new TransientPropertyValueException("Token: " + token +
+                        " não cadastrado no banco para o cliente de id: " +clientId, "Token", "Strategy", "token");
             }
             tokensDB.add(tokenDB.get());
         }
@@ -114,7 +104,8 @@ public class StrategyService {
         for (String site : sites) {
             Optional<Site> siteDB = Optional.ofNullable(this.siteRepository.siteByNameAndClient(site, clientId));
             if (siteDB.isEmpty()) {
-                throw new TransientPropertyValueException("Site: " + site + " não cadastrado no banco", "Site", "Strategy", "site");
+                throw new TransientPropertyValueException("Site: " + site +
+                        " não cadastrado no banco para o cliente de id: " +clientId, "Site", "Strategy", "site");
             }
             sitesDB.add(siteDB.get());
         }
