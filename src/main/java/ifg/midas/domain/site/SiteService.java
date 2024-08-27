@@ -8,6 +8,7 @@ import ifg.midas.domain.strategy.Strategy;
 import ifg.midas.domain.strategy.StrategyRepository;
 import org.hibernate.TransientPropertyValueException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,10 @@ public class SiteService {
         if (clientDB.isEmpty()) {
             throw new TransientPropertyValueException("Cliente não cadastrado no banco", "Client", "Site", "client");
         }
+        Optional.ofNullable(this.siteRepository.siteByUrlAndClient(registryDTO.url(), clientDB.get().getId())).ifPresent(
+                site -> { throw new DataIntegrityViolationException("Site: "+ site.getUrl()
+                        +" já cadastrado e associado ao cliente");
+                });
         Site site = new Site(registryDTO, clientDB.get());
         this.siteRepository.save(site);
         return site;

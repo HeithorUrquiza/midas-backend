@@ -8,6 +8,7 @@ import ifg.midas.domain.token.dto.TokenRegistryDTO;
 import ifg.midas.domain.token.dto.TokenUpdateDTO;
 import org.hibernate.TransientPropertyValueException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,10 @@ public class TokenService {
         if (clientDB.isEmpty()) {
             throw new TransientPropertyValueException("Cliente não cadastrado no banco", "Client", "Commodity", "client");
         }
+        Optional.ofNullable(this.tokenRepository.tokenByTokenAndClient(registryDTO.token(), clientDB.get().getId()))
+                .ifPresent(token -> { throw new DataIntegrityViolationException("Token: "+ token.getToken()
+                        +" já cadastrado e associado ao cliente");
+                });
         Token token = new Token(registryDTO, clientDB.get());
         this.tokenRepository.save(token);
         return token;

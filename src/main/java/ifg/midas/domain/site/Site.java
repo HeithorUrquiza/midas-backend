@@ -23,8 +23,6 @@ public class Site {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-
-    @Column(unique = true, nullable = false)
     private String url;
 
     @ManyToOne

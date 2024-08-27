@@ -6,6 +6,7 @@ import ifg.midas.domain.commodity.dto.CommodityRegistryDTO;
 import ifg.midas.domain.commodity.dto.CommodityUpdateDTO;
 import org.hibernate.TransientPropertyValueException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +26,10 @@ public class CommodityService {
         if (clientDB.isEmpty()) {
             throw new TransientPropertyValueException("Cliente não cadastrado no banco", "Client", "Commodity", "client");
         }
+        Optional.ofNullable(this.commodityRepository.commodityByCodeAndClient(registryDTO.code(), clientDB.get().getId()))
+                .ifPresent(commodity -> { throw new DataIntegrityViolationException("Commodity: " + commodity.getCode() +
+                        "já cadastrado e associado ao cliente");
+                });
         Commodity commodity = new Commodity(registryDTO, clientDB.get());
         this.commodityRepository.save(commodity);
         return commodity;
