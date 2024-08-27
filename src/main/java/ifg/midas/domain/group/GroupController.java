@@ -2,6 +2,7 @@ package ifg.midas.domain.group;
 
 import ifg.midas.domain.group.dto.GroupDetailDTO;
 import ifg.midas.domain.group.dto.GroupRegistryDTO;
+import ifg.midas.domain.group.dto.GroupUpdateDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,12 @@ public class GroupController {
     @GetMapping("/{id}")
     public ResponseEntity<GroupDetailDTO> getGroup(@PathVariable Long id) {
         Group groupDB = this.groupService.getGroup(id);
+        return ResponseEntity.ok(new GroupDetailDTO(groupDB));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<GroupDetailDTO> updateGroup(@PathVariable Long id, @RequestBody GroupUpdateDTO updateDTO) {
+        Group groupDB = this.groupService.updateGroup(id, updateDTO);
         return ResponseEntity.ok(new GroupDetailDTO(groupDB));
     }
 

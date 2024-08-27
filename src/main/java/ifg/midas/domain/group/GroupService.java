@@ -3,6 +3,7 @@ package ifg.midas.domain.group;
 import ifg.midas.domain.client.Client;
 import ifg.midas.domain.client.ClientRepository;
 import ifg.midas.domain.group.dto.GroupRegistryDTO;
+import ifg.midas.domain.group.dto.GroupUpdateDTO;
 import org.hibernate.TransientPropertyValueException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,14 @@ public class GroupService {
         Group group = new Group(registryDTO, clientsDB);
         this.groupRepository.save(group);
         return group;
+    }
+
+    @Transactional
+    public Group updateGroup(Long id, GroupUpdateDTO updateDTO) {
+        Group groupDB = this.groupRepository.getReferenceById(id);
+        Set<Client> clientsDB = this.findClients(updateDTO.clients());
+        groupDB.updateInfos(updateDTO, clientsDB);
+        return groupDB;
     }
 
     public Group getGroup(Long id) {
