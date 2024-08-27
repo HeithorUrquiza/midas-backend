@@ -4,15 +4,11 @@ import ifg.midas.domain.client.Client;
 import ifg.midas.domain.client.ClientRepository;
 import ifg.midas.domain.commodity.dto.CommodityRegistryDTO;
 import ifg.midas.domain.commodity.dto.CommodityUpdateDTO;
-import ifg.midas.domain.strategy.Strategy;
-import ifg.midas.domain.strategy.StrategyRepository;
 import org.hibernate.TransientPropertyValueException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,9 +18,6 @@ public class CommodityService {
 
     @Autowired
     private ClientRepository clientRepository;
-
-    @Autowired
-    private StrategyRepository strategyRepository;
 
     @Transactional
     public Commodity registryCommodity(CommodityRegistryDTO registryDTO) {
@@ -38,11 +31,7 @@ public class CommodityService {
     }
 
     public Commodity getCommodity(Long id) {
-        Commodity commodityDB = this.commodityRepository.getReferenceById(id);
-        List<Strategy> strategiesDB = this.recoverStrategies(commodityDB.getId());
-
-        commodityDB.setStrategies(strategiesDB);
-        return commodityDB;
+        return this.commodityRepository.getReferenceById(id);
     }
 
     @Transactional
@@ -56,10 +45,5 @@ public class CommodityService {
     public void deleteCommodity(Long id) {
         Commodity commodityDB = this.commodityRepository.getReferenceById(id);
         this.commodityRepository.deleteById(commodityDB.getId());
-    }
-
-    private List<Strategy> recoverStrategies(Long id) {
-        List<Strategy> strategiesDB = this.strategyRepository.strategyPerCommodity(id);
-        return strategiesDB.stream().sorted(Comparator.comparing(Strategy::getId)).toList();
     }
 }

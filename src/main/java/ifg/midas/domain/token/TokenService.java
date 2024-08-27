@@ -11,8 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class TokenService {
@@ -37,11 +36,7 @@ public class TokenService {
     }
 
     public Token getToken(Long id) {
-        Token tokenDB = this.tokenRepository.getReferenceById(id);
-        Set<Strategy> strategies = this.recoverStrategies(tokenDB);
-
-        tokenDB.setStrategies(strategies);
-        return tokenDB;
+        return this.tokenRepository.getReferenceById(id);
     }
 
     @Transactional
@@ -65,12 +60,5 @@ public class TokenService {
             }
         }
         this.tokenRepository.delete(tokenDB);
-    }
-
-    private Set<Strategy> recoverStrategies(Token token) {
-        Set<Strategy> strategiesDB = this.strategyRepository.findByTokensContaining(token);
-        return strategiesDB.stream().collect(Collectors.toCollection(() ->
-                new TreeSet<>(Comparator.comparing(Strategy::getId)))
-        );
     }
 }
