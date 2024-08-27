@@ -6,6 +6,8 @@ import ifg.midas.domain.commodity.Commodity;
 import ifg.midas.domain.commodity.CommodityRepository;
 import ifg.midas.domain.site.Site;
 import ifg.midas.domain.site.SiteRepository;
+import ifg.midas.domain.strategy.Strategy;
+import ifg.midas.domain.strategy.StrategyRepository;
 import ifg.midas.domain.token.Token;
 import ifg.midas.domain.token.TokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,9 @@ public class ClientService {
     @Autowired
     private SiteRepository siteRepository;
 
+    @Autowired
+    private StrategyRepository strategyRepository;
+
     @Transactional
     public Client registryClient(ClientRegistryDTO clientRegistryDTO) {
         Client newClient = new Client(clientRegistryDTO);
@@ -41,10 +46,12 @@ public class ClientService {
         List<Commodity> commoditiesDB = this.recoverCommodities(clientDB.getId());
         List<Token> tokensDB = this.recoverTokens(clientDB.getId());
         List<Site> sitesDB = this.recoverSites(clientDB.getId());
+        List<Strategy> strategiesDB = this.recoverStrategies(clientDB.getId());
 
         clientDB.setCommodities(commoditiesDB);
         clientDB.setTokens(tokensDB);
         clientDB.setSites(sitesDB);
+        clientDB.setStrategies(strategiesDB);
 
         return clientDB;
     }
@@ -75,5 +82,10 @@ public class ClientService {
     private List<Site> recoverSites(Long id) {
         List<Site> sitesDB = this.siteRepository.sitePerClient(id);
         return sitesDB.stream().sorted(Comparator.comparing(Site::getId)).toList();
+    }
+
+    private List<Strategy> recoverStrategies(Long id) {
+        List<Strategy> strategiesDB = this.strategyRepository.strategyPerClient(id);
+        return strategiesDB.stream().sorted(Comparator.comparing(Strategy::getId)).toList();
     }
 }
