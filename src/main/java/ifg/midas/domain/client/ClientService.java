@@ -10,12 +10,17 @@ import ifg.midas.domain.site.SiteRepository;
 import ifg.midas.domain.strategy.Strategy;
 import ifg.midas.domain.strategy.StrategyRepository;
 import ifg.midas.domain.token.TokenRepository;
+import org.apache.catalina.security.SecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ClientService {
+
+    private PasswordEncoder passwordEncoder;
+
     @Autowired
     private ClientRepository clientRepository;
 
@@ -25,6 +30,8 @@ public class ClientService {
     @Transactional
     public Client registryClient(ClientRegistryDTO clientRegistryDTO) {
         Client newClient = new Client(clientRegistryDTO);
+        String encodedPassword = this.passwordEncoder.encode(clientRegistryDTO.password());
+        newClient.setPassword(encodedPassword);
         this.clientRepository.save(newClient);
         return newClient;
     }
@@ -36,6 +43,8 @@ public class ClientService {
     @Transactional
     public Client updateClient(Long id, ClientUpdateDTO clientUpdateDTO) {
         Client clientDB = this.clientRepository.getReferenceById(id);
+        String encodedPassword = this.passwordEncoder.encode(clientUpdateDTO.password());
+        clientDB.setPassword(encodedPassword);
         clientDB.updateInfos(clientUpdateDTO);
         return clientDB;
     }
@@ -43,7 +52,6 @@ public class ClientService {
     @Transactional
     public void deleteClient(Long id) {
         Client clientDB = this.clientRepository.getReferenceById(id);
-//        To ensure the deletion of clients on groups in MayToMay relationship
         for (Group group : clientDB.getGroups()) {
             group.getMembers().remove(clientDB);
             this.groupRepository.save(group);

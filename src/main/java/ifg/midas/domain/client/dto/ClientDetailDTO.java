@@ -15,6 +15,7 @@ public record ClientDetailDTO(
         String lastName,
         String email,
         String phone,
+        String password,
         List<CommodityRecoverDTO> commodities,
         List<TokenRecoverDTO> tokens,
         List<SiteRecoverDTO> sites,
@@ -22,7 +23,7 @@ public record ClientDetailDTO(
         List<GroupRecoverDTO> groups
 ) {
     public ClientDetailDTO(Client client) {
-        this(client.getId(), client.getFirstName(), client.getLastName(), client.getEmail(), client.getPhone(),
+        this(client.getId(), client.getFirstName(), client.getLastName(), client.getEmail(), client.getPhone(), client.getPassword(),
                 client.getCommodities().stream().map(CommodityRecoverDTO::new).toList(),
                 client.getTokens().stream().map(TokenRecoverDTO::new).toList(),
                 client.getSites().stream().map(SiteRecoverDTO::new).toList(),

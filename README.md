@@ -10,6 +10,16 @@ RESTful API para o projeto M.I.D.A.S da disciplina de Fábrica de Software.
 - **Lombok**
 - **OpenAPI (Swagger)**
 
+## Database
+
+- O projeto contém um arquivo chamado docker-compose.yml. 
+Nesse arquivo contém toda estrutura para subir o banco de dados PostgreSQL para rodar a aplicação.
+Para subir o banco, basta ir até a pasta raiz do projeto e rodar o comando:
+
+```bash
+docker-compose up
+```
+
 ## Diagrama de Classes
 
 ```mermaid
