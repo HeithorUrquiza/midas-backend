@@ -31,6 +31,7 @@ public class Client {
     @Column(unique = true)
     private String email;
     private String phone;
+    private String password;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Commodity> commodities = new ArrayList<>();
@@ -52,10 +53,15 @@ public class Client {
         this.lastName = clientRegistryDTO.lastName().toUpperCase();
         this.email = clientRegistryDTO.email().toLowerCase();
         this.phone = clientRegistryDTO.phone();
+        this.password = clientRegistryDTO.password();
+
     }
 
     public void updateInfos(ClientUpdateDTO updateDTO) {
         Optional.ofNullable(updateDTO.email()).ifPresent(email -> {if (!email.isBlank()) setEmail(email.toLowerCase());});
         Optional.ofNullable(updateDTO.phone()).ifPresent(phone -> {if (!phone.isBlank()) setPhone(phone);});
+        Optional.ofNullable(updateDTO.password()).ifPresent(password -> {
+            if (!password.isBlank()) setPassword((String) password);
+        });
     }
 }
