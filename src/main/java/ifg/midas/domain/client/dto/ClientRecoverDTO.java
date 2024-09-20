@@ -7,11 +7,11 @@ public record ClientRecoverDTO(
         String firstName,
         String lastName,
         String email,
-        String phone,
+        String phone
 
-        String password
+//        String password
 ) {
     public ClientRecoverDTO(Client client) {
-        this(client.getId(), client.getFirstName(), client.getLastName(), client.getEmail(), client.getPhone(), client.getPassword());
+        this(client.getId(), client.getFirstName(), client.getLastName(), client.getEmail(), client.getPhone());
     }
 }

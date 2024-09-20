@@ -1,5 +1,6 @@
 package ifg.midas.infra.exception;
 
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.TransientPropertyValueException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -19,6 +20,9 @@ public class ErrorHandler {
     public ResponseEntity<Void> handleEntityNotFound() {
         return ResponseEntity.notFound().build();
     }
+
+    @ExceptionHandler(EntityExistsException.class)
+    public ResponseEntity<String> handleEntityExist() { return ResponseEntity.badRequest().body("Usuário já cadastrado"); }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<List<ValidationDataError>> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
