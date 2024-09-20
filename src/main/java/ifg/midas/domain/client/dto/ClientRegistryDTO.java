@@ -11,5 +11,4 @@ public record ClientRegistryDTO(
         @NotBlank @Email String email,
         @NotBlank @Pattern(regexp = "\\d{11}") String phone,
         @NotBlank @Size(min = 8) String password
-
 ) {}

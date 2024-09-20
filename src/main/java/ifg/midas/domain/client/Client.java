@@ -12,6 +12,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
 
@@ -21,7 +23,7 @@ import java.util.*;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class Client {
+public class Client implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -48,20 +50,35 @@ public class Client {
     @ManyToMany(mappedBy = "members")
     private Set<Group> groups = new HashSet<>();
 
-    public Client(ClientRegistryDTO clientRegistryDTO) {
+    public Client(ClientRegistryDTO clientRegistryDTO, String encodedPassword) {
         this.firstName = clientRegistryDTO.firstName().toUpperCase();
         this.lastName = clientRegistryDTO.lastName().toUpperCase();
         this.email = clientRegistryDTO.email().toLowerCase();
         this.phone = clientRegistryDTO.phone();
-        this.password = clientRegistryDTO.password();
+        this.password = encodedPassword;
 
     }
 
-    public void updateInfos(ClientUpdateDTO updateDTO) {
+    public void updateInfos(ClientUpdateDTO updateDTO, String encodedPassword) {
         Optional.ofNullable(updateDTO.email()).ifPresent(email -> {if (!email.isBlank()) setEmail(email.toLowerCase());});
         Optional.ofNullable(updateDTO.phone()).ifPresent(phone -> {if (!phone.isBlank()) setPhone(phone);});
-        Optional.ofNullable(updateDTO.password()).ifPresent(password -> {
+        Optional.ofNullable(encodedPassword).ifPresent(password -> {
             if (!password.isBlank()) setPassword((String) password);
         });
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
     }
 }

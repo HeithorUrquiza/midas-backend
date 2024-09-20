@@ -1,7 +1,8 @@
 spring:
-  url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
-  username: ${DB_USER}
-  password: ${DB_PASSWORD}
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
@@ -10,6 +11,7 @@ spring:
         format_sql: true
     show-sql: true
 
-jwt:
-    secret: aP9sK4lZmQ5uT3wV8nX2bZ7cE6jY1pFgR5hV9kW2oB8mG2dP6yR7nK3vW4tC9lJgP2xQ8sJ7vD6nM9baP9sK4lZmQ5uT3wV8nX2bZ7cE6jY1pFgR5hV9kW2oB8mG2dP6yR7nK3vW4tC9lJgP2xQ8sJ7vD6nM9b
-
+api:
+  security:
+    token:
+      secret: ${JWT_SECRET}

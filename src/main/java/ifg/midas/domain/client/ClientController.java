@@ -23,7 +23,7 @@ public class ClientController {
     @Autowired
     private ClientService clientService;
 
-    @PostMapping
+    @PostMapping()
     @Operation(summary = "Registro de cliente",
             description = "Registra um novo cliente e retorna seus dados junto com a URL para recuperação do novo registro")
     @ApiResponses(value = {

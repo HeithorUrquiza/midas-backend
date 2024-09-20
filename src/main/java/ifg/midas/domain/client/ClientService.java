@@ -2,15 +2,9 @@ package ifg.midas.domain.client;
 
 import ifg.midas.domain.client.dto.ClientRegistryDTO;
 import ifg.midas.domain.client.dto.ClientUpdateDTO;
-import ifg.midas.domain.commodity.CommodityRepository;
 import ifg.midas.domain.group.Group;
 import ifg.midas.domain.group.GroupRepository;
-import ifg.midas.domain.site.Site;
-import ifg.midas.domain.site.SiteRepository;
-import ifg.midas.domain.strategy.Strategy;
-import ifg.midas.domain.strategy.StrategyRepository;
-import ifg.midas.domain.token.TokenRepository;
-import org.apache.catalina.security.SecurityConfig;
+import jakarta.persistence.EntityExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ClientService {
-
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -29,9 +23,9 @@ public class ClientService {
 
     @Transactional
     public Client registryClient(ClientRegistryDTO clientRegistryDTO) {
-        Client newClient = new Client(clientRegistryDTO);
+        if (this.clientRepository.findByEmailIgnoreCase(clientRegistryDTO.email()) != null) throw new EntityExistsException();
         String encodedPassword = this.passwordEncoder.encode(clientRegistryDTO.password());
-        newClient.setPassword(encodedPassword);
+        Client newClient = new Client(clientRegistryDTO, encodedPassword);
         this.clientRepository.save(newClient);
         return newClient;
     }
@@ -44,8 +38,7 @@ public class ClientService {
     public Client updateClient(Long id, ClientUpdateDTO clientUpdateDTO) {
         Client clientDB = this.clientRepository.getReferenceById(id);
         String encodedPassword = this.passwordEncoder.encode(clientUpdateDTO.password());
-        clientDB.setPassword(encodedPassword);
-        clientDB.updateInfos(clientUpdateDTO);
+        clientDB.updateInfos(clientUpdateDTO, encodedPassword);
         return clientDB;
     }
 
